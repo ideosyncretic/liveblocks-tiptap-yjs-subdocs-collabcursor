@@ -14,7 +14,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const roomID = "my-kanban-test-001";
+  const roomID = "my-kanban-test-002";
 
   // Card
   const initialCard = new LiveObject({

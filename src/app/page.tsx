@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { LiveObject } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import LiveblocksProvider from "@liveblocks/yjs";
-import { Stack, Card, Button } from "@mantine/core";
+import { Stack, Card, Button, Text } from "@mantine/core";
 
 import {
   useMutation,
@@ -49,6 +49,9 @@ function App() {
 
     // Initialize top-level shared fragment
     yDoc.get("title", Y.XmlFragment);
+
+    // Initialize top-level shared fragment
+    yDoc.get("description", Y.XmlFragment);
 
     return () => {
       setSynced(false);
@@ -131,76 +134,105 @@ function App() {
     return null;
   }
 
-  const yListsMap = doc.getMap("lists");
-  console.log("yListsMap", yListsMap);
-  const yListSubdoc = yListsMap.get(lists[0].id) as Y.Doc | null;
+  const yListsMap = doc.getMap<Y.Doc>("lists");
+  const yListSubdoc = yListsMap.get(lists[0].id);
+
   console.log("Rendering subdoc:", yListSubdoc?.guid);
 
   return (
-    <main>
-      <Stack mb="xl">
-        <p>Connection status: {status}</p>
-        <p>Sync status: {synced ? "Synced" : "Syncing..."}</p>
-        {lists.map((list) => {
+    <Stack m="lg">
+      <Stack gap={0}>
+        <Text size="sm" pb="xs">
+          Connection status: {status}
+        </Text>
+        <Text size="sm" pb="xs">
+          Sync status: {synced ? "Synced" : "Syncing..."}
+        </Text>
+      </Stack>
+
+      <Stack gap={0}>
+        <h4>Board Title</h4>
+        <Editor
+          fragment={doc.getXmlFragment("title")}
+          provider={provider}
+          placeholder="Title here"
+        />
+        <Editor
+          fragment={doc.getXmlFragment("description")}
+          provider={provider}
+          placeholder="Description here"
+        />
+      </Stack>
+
+      {yListSubdoc &&
+        synced &&
+        lists.map((list) => {
           return (
-            <Stack key={list.id}>
-              <Stack mb="lg">
-                <h2>List ID: {list.id}</h2>
-                <pre>Subdoc GUID: {yListSubdoc?.guid}</pre>
-              </Stack>
-              <Stack gap={0}>
-                <h4>List Title</h4>
-                <Editor
-                  fragment={doc.get("title") as Y.XmlFragment}
-                  provider={provider}
-                  placeholder="Title here"
-                />
-              </Stack>
+            <Card key={list.id} w="400px">
+              <Stack>
+                <Stack gap={0}>
+                  <h4>List</h4>
+                  <Editor
+                    fragment={yListSubdoc.getXmlFragment("title")}
+                    provider={provider}
+                    placeholder="Title here"
+                  />
+                  <Editor
+                    fragment={yListSubdoc.getXmlFragment("description")}
+                    provider={provider}
+                    placeholder="Description here"
+                  />
+                </Stack>
 
-              <h4>Cards</h4>
-              {list.cards?.map((card) => {
-                return (
-                  <Card key={card.id} withBorder>
-                    <h5>Card ID: {card.id}</h5>
-                    {yListSubdoc && synced && (
-                      <>
-                        <Stack mt="lg" gap={0}>
-                          <b>Title</b>
-                          <Editor
-                            fragment={yListSubdoc.getXmlFragment(
-                              `title_${card.id}`
-                            )}
-                            provider={provider}
-                            placeholder="Title here"
-                          />
-                        </Stack>
-                        <Stack gap={0}>
-                          <b>Description</b>
-                          <Editor
-                            fragment={yListSubdoc.getXmlFragment(
-                              `description_${card.id}`
-                            )}
-                            provider={provider}
-                            placeholder="Description here"
-                          />
-                        </Stack>
-                      </>
-                    )}
-                    <Button
-                      onClick={() => deleteCard(list.id, card.id)}
-                      variant="filled"
-                      color="red">
-                      Remove
-                    </Button>
-                  </Card>
-                );
-              })}
+                <Stack mb="lg" gap="xs">
+                  <Text size="xs">List ID: {list.id}</Text>
+                  <Text size="xs">Subdoc GUID: {yListSubdoc.guid}</Text>
+                </Stack>
 
-              <Button onClick={() => addCard(list.id)}>Add new card</Button>
-            </Stack>
+                <h4>Cards</h4>
+                {list.cards?.map((card) => {
+                  return (
+                    <Card key={card.id} withBorder shadow="md" bg="">
+                      <Text size="xs">Card ID: {card.id}</Text>
+                      {
+                        <>
+                          <Stack mt="lg" gap={0}>
+                            <b>Title</b>
+                            <Editor
+                              fragment={yListSubdoc.getXmlFragment(
+                                `title_${card.id}`
+                              )}
+                              provider={provider}
+                              placeholder="Title here"
+                            />
+                          </Stack>
+                          <Stack gap={0}>
+                            <b>Description</b>
+                            <Editor
+                              fragment={yListSubdoc.getXmlFragment(
+                                `description_${card.id}`
+                              )}
+                              provider={provider}
+                              placeholder="Description here"
+                            />
+                          </Stack>
+                        </>
+                      }
+                      <Button
+                        onClick={() => deleteCard(list.id, card.id)}
+                        variant="filled"
+                        color="red">
+                        Remove
+                      </Button>
+                    </Card>
+                  );
+                })}
+
+                <Button onClick={() => addCard(list.id)}>Add new card</Button>
+              </Stack>
+            </Card>
           );
         })}
-      </Stack>
-    </main>
+    </Stack>
   );
 }
