@@ -2,10 +2,10 @@
 
 import type { BaseUserMeta } from "@liveblocks/core";
 import { useEffect, useState } from "react";
-import { LiveObject } from "@liveblocks/client";
+import { LiveList, LiveObject } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import LiveblocksProvider from "@liveblocks/yjs";
-import { Stack, Card, Button, Text } from "@mantine/core";
+import { Stack, Card, Button, Text, Group } from "@mantine/core";
 
 import {
   useMutation,
@@ -66,31 +66,34 @@ function App() {
     // Create a top-level map to store subdocs
     const yListsMap = doc.getMap<Y.Doc>("lists");
 
+    const createSubdocForList = (list: { id: string }) => {
+      // Init List subdoc
+      const yListSubdoc = new Y.Doc();
+
+      if (yListsMap.get(list.id) instanceof Y.Doc) {
+        console.log("Subdoc already exists:", yListsMap.get(list.id)?.guid);
+      } else {
+        // If the subdoc doesn't exist yet
+        yListsMap.set(list.id, yListSubdoc); // Add it to the map
+        console.log("Subdoc created:", yListSubdoc.guid);
+      }
+    };
+
     provider.on("sync", () => {
       setSynced(true); // Triggers a rerender. Subdocs wouldn't be able to be loaded in time for rendering otherwise
 
-      // Create subdocument for each List in Liveblocks Storage
       lists?.forEach((list) => {
-        // Init List subdoc
-        const yListSubdoc = new Y.Doc();
-
-        if (yListsMap.get(list.id) instanceof Y.Doc) {
-          console.log("Subdoc already exists:", yListsMap.get(list.id)?.guid);
-        } else {
-          // If the subdoc doesn't exist yet
-          yListsMap.set(list.id, yListSubdoc); // Add it to the map
-          console.log("Subdoc created:", yListSubdoc.guid);
-        }
+        createSubdocForList(list);
       });
     });
   }, [lists, doc, provider, room]);
 
   const addCard = useMutation(
     // Mutation context is passed as the first argument
-    ({ storage }, listId: string) => {
+    ({ storage }, listID: string) => {
       const lists = storage.get("lists");
       const currentListIndex = lists.findIndex(
-        (value) => value.toObject().id === listId
+        (value) => value.toObject().id === listID
       );
       const currentList = lists.get(currentListIndex);
 
@@ -107,18 +110,18 @@ function App() {
 
   const deleteCard = useMutation(
     // Mutation context is passed as the first argument
-    ({ storage }, listId: string, cardToDeleteId: string) => {
+    ({ storage }, listID: string, cardToDeleteID: string) => {
       const lists = storage.get("lists");
 
       const currentListIndex = lists.findIndex(
-        (list) => list.toObject().id === listId
+        (list) => list.toObject().id === listID
       );
       const currentList = lists.get(currentListIndex);
 
       const currentListOfCards = currentList?.get("cards");
 
       const cardToDeleteIndex = currentListOfCards?.findIndex(
-        (card) => card.toObject().id === cardToDeleteId
+        (card) => card.toObject().id === cardToDeleteID
       );
 
       if (typeof cardToDeleteIndex !== "number") {
@@ -130,14 +133,41 @@ function App() {
     []
   );
 
+  const addList = useMutation(
+    // Mutation context is passed as the first argument
+    ({ storage }) => {
+      const lists = storage.get("lists");
+
+      const newList = new LiveObject({
+        id: `list-${createId()}`,
+        cards: new LiveList([]),
+      });
+
+      lists?.push(newList);
+    },
+    []
+  );
+
+  const deleteList = useMutation(
+    // Mutation context is passed as the first argument
+    ({ storage }, listToDeleteID: string) => {
+      const lists = storage.get("lists");
+
+      const listToDeleteIndex = lists.findIndex(
+        (list) => list.toObject().id === listToDeleteID
+      );
+
+      lists?.delete(listToDeleteIndex);
+    },
+    []
+  );
+
   if (!doc || !provider) {
     return null;
   }
 
   const yListsMap = doc.getMap<Y.Doc>("lists");
-  const yListSubdoc = yListsMap.get(lists[0].id);
-
-  console.log("Rendering subdoc:", yListSubdoc?.guid);
+  // const yListSubdoc = yListsMap.get(lists[0].id);
 
   return (
     <Stack m="lg">
@@ -155,84 +185,102 @@ function App() {
         <Editor
           fragment={doc.getXmlFragment("title")}
           provider={provider}
-          placeholder="Title here"
+          placeholder="New board title..."
         />
         <Editor
           fragment={doc.getXmlFragment("description")}
           provider={provider}
-          placeholder="Description here"
+          placeholder="Describe this board..."
         />
       </Stack>
 
-      {yListSubdoc &&
-        synced &&
-        lists.map((list) => {
-          return (
-            <Card key={list.id} w="400px">
-              <Stack>
-                <Stack gap={0}>
-                  <h4>List</h4>
-                  <Editor
-                    fragment={yListSubdoc.getXmlFragment("title")}
-                    provider={provider}
-                    placeholder="Title here"
-                  />
-                  <Editor
-                    fragment={yListSubdoc.getXmlFragment("description")}
-                    provider={provider}
-                    placeholder="Description here"
-                  />
-                </Stack>
+      <Button onClick={addList}>Add new list</Button>
 
-                <Stack mb="lg" gap="xs">
-                  <Text size="xs">List ID: {list.id}</Text>
-                  <Text size="xs">Subdoc GUID: {yListSubdoc.guid}</Text>
-                </Stack>
+      <Group align="start">
+        {synced &&
+          lists.map((list) => {
+            const yListSubdoc = yListsMap.get(list.id);
 
-                <h4>Cards</h4>
-                {list.cards?.map((card) => {
-                  return (
-                    <Card key={card.id} withBorder shadow="md" bg="">
-                      <Text size="xs">Card ID: {card.id}</Text>
-                      {
-                        <>
-                          <Stack mt="lg" gap={0}>
-                            <b>Title</b>
-                            <Editor
-                              fragment={yListSubdoc.getXmlFragment(
-                                `title_${card.id}`
-                              )}
-                              provider={provider}
-                              placeholder="Title here"
-                            />
-                          </Stack>
-                          <Stack gap={0}>
-                            <b>Description</b>
-                            <Editor
-                              fragment={yListSubdoc.getXmlFragment(
-                                `description_${card.id}`
-                              )}
-                              provider={provider}
-                              placeholder="Description here"
-                            />
-                          </Stack>
-                        </>
-                      }
-                      <Button
-                        onClick={() => deleteCard(list.id, card.id)}
-                        variant="filled"
-                        color="red">
-                        Remove
-                      </Button>
-                    </Card>
-                  );
-                })}
+            return (
+              yListSubdoc && (
+                <Card key={list.id} w="400px">
+                  <Stack>
+                    <Stack gap={0}>
+                      <Group align="start" justify="space-between">
+                        <h2>List</h2>
+                        <Button
+                          onClick={() => deleteList(list.id)}
+                          variant="filled"
+                          color="red">
+                          Remove List
+                        </Button>
+                      </Group>
 
-                <Button onClick={() => addCard(list.id)}>Add new card</Button>
-              </Stack>
-            </Card>
-          );
-        })}
+                      <Stack mb="lg" gap="xs">
+                        <Text size="xs">List ID: {list.id}</Text>
+                        <Text size="xs">Subdoc GUID: {yListSubdoc.guid}</Text>
+                      </Stack>
+
+                      <Editor
+                        fragment={yListSubdoc.getXmlFragment("title")}
+                        provider={provider}
+                        placeholder="Title here"
+                      />
+                      <Editor
+                        fragment={yListSubdoc.getXmlFragment("description")}
+                        provider={provider}
+                        placeholder="Description here"
+                      />
+                    </Stack>
+
+                    <h4>Cards</h4>
+                    {list.cards?.map((card) => {
+                      return (
+                        <Card key={card.id} withBorder shadow="md" bg="">
+                          <Text size="xs">Card ID: {card.id}</Text>
+                          {
+                            <>
+                              <Stack mt="lg" gap={0}>
+                                <b>Title</b>
+                                <Editor
+                                  fragment={yListSubdoc.getXmlFragment(
+                                    `title_${card.id}`
+                                  )}
+                                  provider={provider}
+                                  placeholder="Title here"
+                                />
+                              </Stack>
+                              <Stack gap={0}>
+                                <b>Description</b>
+                                <Editor
+                                  fragment={yListSubdoc.getXmlFragment(
+                                    `description_${card.id}`
+                                  )}
+                                  provider={provider}
+                                  placeholder="Description here"
+                                />
+                              </Stack>
+                            </>
+                          }
+                          <Button
+                            onClick={() => deleteCard(list.id, card.id)}
+                            variant="filled"
+                            color="red">
+                            Remove
+                          </Button>
+                        </Card>
+                      );
+                    })}
+
+                    <Button onClick={() => addCard(list.id)}>
+                      Add new card
+                    </Button>
+                  </Stack>
+                </Card>
+              )
+            );
+          })}
+      </Group>
     </Stack>
   );
 }
