@@ -5,7 +5,8 @@ import "./globals.css";
 import "@mantine/core/styles.css";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { LiveList, LiveObject } from "@liveblocks/client";
-import { RoomProvider } from "../../liveblocks.config";
+import { RoomProvider } from "@liveblocks/react/suspense";
+import { LiveblocksProvider } from "@liveblocks/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,12 +40,15 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <MantineProvider defaultColorScheme="auto">
-          <RoomProvider
-            id={roomID}
-            initialPresence={{}}
-            initialStorage={initialStorage}>
-            {children}
-          </RoomProvider>
+          <LiveblocksProvider publicApiKey="pk_dev_-b4yutdv6WGIH81lC_BC9EG-Ux2QPbthDl-kMyVj9pEqPc1vzKHxDG6v5w7WeJVB">
+            <RoomProvider
+              id={roomID}
+              initialPresence={{}}
+              initialStorage={initialStorage}
+            >
+              {children}
+            </RoomProvider>
+          </LiveblocksProvider>
         </MantineProvider>
       </body>
     </html>

@@ -11,7 +11,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import * as Y from "yjs";
 
 import { EditorContent, useEditor } from "@tiptap/react";
-import { useSelf } from "../../liveblocks.config";
+import { useSelf } from "@liveblocks/react/suspense";
 import { getRandomColor } from "@/utils/CollaborationUtils";
 
 const Editor = memo(function Editor({

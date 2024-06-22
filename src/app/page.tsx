@@ -4,7 +4,7 @@ import type { BaseUserMeta } from "@liveblocks/core";
 import { useEffect, useState } from "react";
 import { LiveList, LiveObject } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
-import LiveblocksProvider from "@liveblocks/yjs";
+import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import { Stack, Card, Button, Text, Group } from "@mantine/core";
 
 import {
@@ -12,7 +12,7 @@ import {
   useRoom,
   useStorage,
   useStatus,
-} from "../../liveblocks.config";
+} from "@liveblocks/react/suspense";
 import * as Y from "yjs";
 import { createId } from "@paralleldrive/cuid2";
 import Editor from "@/components/Editor.component";
@@ -30,7 +30,7 @@ function App() {
   const room = useRoom();
   const [doc, setDoc] = useState<Y.Doc>();
   const [provider, setProvider] =
-    useState<LiveblocksProvider<never, never, BaseUserMeta, never>>();
+    useState<LiveblocksYjsProvider<never, never, BaseUserMeta, never>>();
 
   const status = useStatus();
   const [synced, setSynced] = useState(false);
@@ -41,7 +41,7 @@ function App() {
   useEffect(() => {
     // Initialize Yjs and Liveblocks Provider
     const yDoc = new Y.Doc();
-    const yProvider = new LiveblocksProvider(room, yDoc, {
+    const yProvider = new LiveblocksYjsProvider(room, yDoc, {
       autoloadSubdocs: true,
     });
     setDoc(yDoc);

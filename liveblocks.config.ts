@@ -1,15 +1,8 @@
 import {
-  createClient,
   type LiveList,
   // type LiveMap,
   type LiveObject,
 } from "@liveblocks/client";
-import { createLiveblocksContext, createRoomContext } from "@liveblocks/react";
-
-const client = createClient({
-  publicApiKey:
-    "pk_dev_-b4yutdv6WGIH81lC_BC9EG-Ux2QPbthDl-kMyVj9pEqPc1vzKHxDG6v5w7WeJVB",
-});
 
 // Presence represents the properties that exist on every user in the Room
 // and that will automatically be kept in sync. Accessible through the
@@ -62,67 +55,13 @@ export type ThreadMetadata = {
   // time: number;
 };
 
-// Room-level hooks, use inside `RoomProvider`
-export const {
-  suspense: {
-    RoomProvider,
-    useRoom,
-    useMyPresence,
-    useUpdateMyPresence,
-    useSelf,
-    useOthers,
-    useOthersMapped,
-    useOthersListener,
-    useOthersConnectionIds,
-    useOther,
-    useBroadcastEvent,
-    useEventListener,
-    useErrorListener,
-    useStorage,
-    useObject,
-    useMap,
-    useList,
-    useBatch,
-    useHistory,
-    useUndo,
-    useRedo,
-    useCanUndo,
-    useCanRedo,
-    useMutation,
-    useStatus,
-    useLostConnectionListener,
-    useThreads,
-    useCreateThread,
-    useEditThreadMetadata,
-    useCreateComment,
-    useEditComment,
-    useDeleteComment,
-    useAddReaction,
-    useRemoveReaction,
-    useThreadSubscription,
-    useMarkThreadAsRead,
-    useRoomNotificationSettings,
-    useUpdateRoomNotificationSettings,
-
-    // These hooks can be exported from either context
-    // useUser,
-    // useRoomInfo
-  },
-} = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(
-  client
-);
-
-// Project-level hooks, use inside `LiveblocksProvider`
-export const {
-  suspense: {
-    LiveblocksProvider,
-    useMarkInboxNotificationAsRead,
-    useMarkAllInboxNotificationsAsRead,
-    useInboxNotifications,
-    useUnreadInboxNotificationsCount,
-
-    // These hooks can be exported from either context
-    useUser,
-    useRoomInfo,
-  },
-} = createLiveblocksContext<UserMeta, ThreadMetadata>(client);
+declare global {
+  // For more information, see https://liveblocks.io/docs/api-reference/liveblocks-client#TypeScript
+  interface Liveblocks {
+    Presence: Presence;
+    Storage: Storage;
+    UserMeta: UserMeta;
+    RoomEvent: RoomEvent;
+    ThreadMetadata: ThreadMetadata;
+  }
+}
