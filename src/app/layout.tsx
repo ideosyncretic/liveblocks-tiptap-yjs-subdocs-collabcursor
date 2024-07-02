@@ -15,7 +15,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const roomID = "my-kanban-test-2024-06-12-002";
+  const roomID = "my-kanban-test-2024-06-22-3lists";
 
   // Card
   const initialCard = new LiveObject({
@@ -23,14 +23,22 @@ export default function RootLayout({
   });
 
   // List
-  const initialList = new LiveObject({
+  const listTodo = new LiveObject({
     id: "list-1",
     cards: new LiveList([initialCard]),
+  });
+  const listInProgress = new LiveObject({
+    id: "list-2",
+    cards: new LiveList([]),
+  });
+  const listDone = new LiveObject({
+    id: "list-3",
+    cards: new LiveList([]),
   });
 
   // List
   const initialStorage = {
-    lists: new LiveList([initialList]),
+    lists: new LiveList([listTodo, listInProgress, listDone]),
   };
 
   return (

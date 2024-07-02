@@ -194,9 +194,9 @@ function App() {
         />
       </Stack>
 
-      <Button onClick={addList}>Add new list</Button>
+      {/* <Button onClick={addList}>Add new list</Button> */}
 
-      <Group align="start">
+      <Group align="start" wrap="nowrap">
         {synced &&
           lists.map((list) => {
             const yListSubdoc = yListsMap.get(list.id);
@@ -211,7 +211,8 @@ function App() {
                         <Button
                           onClick={() => deleteList(list.id)}
                           variant="filled"
-                          color="red">
+                          color="red"
+                        >
                           Remove List
                         </Button>
                       </Group>
@@ -265,7 +266,8 @@ function App() {
                           <Button
                             onClick={() => deleteCard(list.id, card.id)}
                             variant="filled"
-                            color="red">
+                            color="red"
+                          >
                             Remove
                           </Button>
                         </Card>
