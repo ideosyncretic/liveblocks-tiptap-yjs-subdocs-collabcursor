@@ -53,10 +53,18 @@ export const CollaborationCursor = Extension.create<
       },
       render: (user, currentEditorID) => {
         console.group("render");
+
+        // For some reason this works? Where does it come from?
         console.log("currentEditorID: ", currentEditorID);
+
+        // This isn’t working. This always resolves to the last editor to render, probably because each fragment updates the user object anew
         console.log("user.editorID: ", user.editorID);
+
+        // Currently, comparison is only true when the cursor is in the last-rendered editor. This is a reverse of the if check done below.
         console.log("should render: ", user.editorID === currentEditorID);
+
         console.groupEnd();
+
         if (user.editorID !== currentEditorID) {
           return document.createElement("span"); // Return empty span if not matching
         }
