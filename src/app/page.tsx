@@ -186,11 +186,13 @@ function App() {
           fragment={doc.getXmlFragment("title")}
           provider={provider}
           placeholder="New board title..."
+          editorID="board-title"
         />
         <Editor
           fragment={doc.getXmlFragment("description")}
           provider={provider}
           placeholder="Describe this board..."
+          editorID="board-description"
         />
       </Stack>
 
@@ -211,8 +213,7 @@ function App() {
                         <Button
                           onClick={() => deleteList(list.id)}
                           variant="filled"
-                          color="red"
-                        >
+                          color="red">
                           Remove List
                         </Button>
                       </Group>
@@ -226,11 +227,13 @@ function App() {
                         fragment={yListSubdoc.getXmlFragment("title")}
                         provider={provider}
                         placeholder="Title here"
+                        editorID={`list-${list.id}-title`}
                       />
                       <Editor
                         fragment={yListSubdoc.getXmlFragment("description")}
                         provider={provider}
                         placeholder="Description here"
+                        editorID={`list-${list.id}-description`}
                       />
                     </Stack>
 
@@ -249,6 +252,7 @@ function App() {
                                   )}
                                   provider={provider}
                                   placeholder="Title here"
+                                  editorID={`card-${list.id}-${card.id}-title`}
                                 />
                               </Stack>
                               <Stack gap={0}>
@@ -259,6 +263,7 @@ function App() {
                                   )}
                                   provider={provider}
                                   placeholder="Description here"
+                                  editorID={`card-${list.id}-${card.id}-description`}
                                 />
                               </Stack>
                             </>
@@ -266,8 +271,7 @@ function App() {
                           <Button
                             onClick={() => deleteCard(list.id, card.id)}
                             variant="filled"
-                            color="red"
-                          >
+                            color="red">
                             Remove
                           </Button>
                         </Card>

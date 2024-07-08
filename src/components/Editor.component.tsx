@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 import Collaboration from "@tiptap/extension-collaboration";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import { CollaborationCursor } from "@/extensions/CollaborationCursor.extension";
 
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -18,10 +18,12 @@ const Editor = memo(function Editor({
   fragment,
   placeholder,
   provider,
+  editorID,
 }: {
   fragment: Y.XmlFragment;
   placeholder: string;
-  provider: unknown;
+  provider: any;
+  editorID: string;
 }) {
   const userInfo = useSelf((me) => me.info);
 
@@ -38,7 +40,12 @@ const Editor = memo(function Editor({
       }),
       CollaborationCursor.configure({
         provider: provider,
-        user: { name: userInfo?.name, color: getRandomColor() },
+        user: {
+          name: userInfo?.name || "Anonymous",
+          color: getRandomColor(),
+          editorID: editorID,
+        },
+        // You can override the default render and selectionRender functions here if needed
       }),
     ],
   });
