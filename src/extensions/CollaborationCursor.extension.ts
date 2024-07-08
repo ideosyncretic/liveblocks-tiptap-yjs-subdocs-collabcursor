@@ -55,7 +55,7 @@ export const CollaborationCursor = Extension.create<
         console.group("render");
         console.log("currentEditorID: ", currentEditorID);
         console.log("user.editorID: ", user.editorID);
-        console.log("should render: ", user.editorID !== currentEditorID);
+        console.log("should render: ", user.editorID === currentEditorID);
         console.groupEnd();
         if (user.editorID !== currentEditorID) {
           return document.createElement("span"); // Return empty span if not matching
