@@ -186,13 +186,13 @@ function App() {
           fragment={doc.getXmlFragment("title")}
           provider={provider}
           placeholder="New board title..."
-          editorID="board-title"
+          docID={"main-doc"}
         />
         <Editor
           fragment={doc.getXmlFragment("description")}
           provider={provider}
           placeholder="Describe this board..."
-          editorID="board-description"
+          docID={"main-doc"}
         />
       </Stack>
 
@@ -227,13 +227,13 @@ function App() {
                         fragment={yListSubdoc.getXmlFragment("title")}
                         provider={provider}
                         placeholder="Title here"
-                        editorID={`list-${list.id}-title`}
+                        docID={yListSubdoc.guid}
                       />
                       <Editor
                         fragment={yListSubdoc.getXmlFragment("description")}
                         provider={provider}
                         placeholder="Description here"
-                        editorID={`list-${list.id}-description`}
+                        docID={yListSubdoc.guid}
                       />
                     </Stack>
 
@@ -252,7 +252,7 @@ function App() {
                                   )}
                                   provider={provider}
                                   placeholder="Title here"
-                                  editorID={`card-${list.id}-${card.id}-title`}
+                                  docID={yListSubdoc.guid}
                                 />
                               </Stack>
                               <Stack gap={0}>
@@ -263,7 +263,7 @@ function App() {
                                   )}
                                   provider={provider}
                                   placeholder="Description here"
-                                  editorID={`card-${list.id}-${card.id}-description`}
+                                  docID={yListSubdoc.guid}
                                 />
                               </Stack>
                             </>

@@ -31,10 +31,10 @@ importers:
         version: 2.4.0(@tiptap/pm@2.4.0)
       '@tiptap/extension-collaboration':
         specifier: ^2.4.0
-        version: 2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(@tiptap/pm@2.4.0)(y-prosemirror@1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))
+        version: 2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(@tiptap/pm@2.4.0)(y-prosemirror@https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))
       '@tiptap/extension-collaboration-cursor':
         specifier: ^2.4.0
-        version: 2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(y-prosemirror@1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))
+        version: 2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(y-prosemirror@https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))
       '@tiptap/extension-document':
         specifier: ^2.4.0
         version: 2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))
@@ -63,8 +63,8 @@ importers:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
       y-prosemirror:
-        specifier: ^1.2.9
-        version: 1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18)
+        specifier: github:andrictham/y-prosemirror#master
+        version: https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18)
       yjs:
         specifier: ^13.6.18
         version: 13.6.18
@@ -287,12 +287,14 @@ packages:
 
   '@tiptap/extension-collaboration-cursor@2.4.0':
     resolution: {integrity: sha512-BTVy9FCTGdHxYieJ4lteVLrRY5qAPQyfunhMwakVf1NT3iU9quE6CaeaIwt6wEDJPMPPKzOHg1/ltSz9nIDe4A==}
+    version: 2.4.0
     peerDependencies:
       '@tiptap/core': ^2.0.0
       y-prosemirror: ^1.2.5
 
   '@tiptap/extension-collaboration@2.4.0':
     resolution: {integrity: sha512-achU+GU9tqxn3zsU61CbwWrCausf0U23MJIpo8vnywOIx6E955by6okHEHoUazLIGVFXVc5DBzBP7bf+Snzk0Q==}
+    version: 2.4.0
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -1697,8 +1699,9 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  y-prosemirror@1.2.9:
-    resolution: {integrity: sha512-fThGIVmSqrqnG/ckywEGlHM9ElfILC4TcMZd5zxWPe/i+UuP97TEr4swsopRKG3Y+KHBVt4Y/5NVBC3AAsUoUg==}
+  y-prosemirror@https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2:
+    resolution: {tarball: https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2}
+    version: 1.2.9
     engines: {node: '>=16.0.0', npm: '>=8.0.0'}
     peerDependencies:
       prosemirror-model: ^1.7.1
@@ -1912,16 +1915,16 @@ snapshots:
       '@tiptap/pm': 2.4.0
       tippy.js: 6.3.7
 
-  '@tiptap/extension-collaboration-cursor@2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(y-prosemirror@1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))':
+  '@tiptap/extension-collaboration-cursor@2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(y-prosemirror@https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))':
     dependencies:
       '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
-      y-prosemirror: 1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18)
+      y-prosemirror: https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18)
 
-  '@tiptap/extension-collaboration@2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(@tiptap/pm@2.4.0)(y-prosemirror@1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))':
+  '@tiptap/extension-collaboration@2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))(@tiptap/pm@2.4.0)(y-prosemirror@https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18))':
     dependencies:
       '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
       '@tiptap/pm': 2.4.0
-      y-prosemirror: 1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18)
+      y-prosemirror: https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18)
 
   '@tiptap/extension-document@2.4.0(@tiptap/core@2.4.0(@tiptap/pm@2.4.0))':
     dependencies:
@@ -3610,7 +3613,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  y-prosemirror@1.2.9(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18):
+  y-prosemirror@https://codeload.github.com/andrictham/y-prosemirror/tar.gz/b7b66b1aabb7e10a890740ffbe50c759492c3cb2(prosemirror-model@1.21.1)(prosemirror-state@1.4.3)(prosemirror-view@1.33.8)(y-protocols@1.0.6(yjs@13.6.18))(yjs@13.6.18):
     dependencies:
       lib0: 0.2.94
       prosemirror-model: 1.21.1

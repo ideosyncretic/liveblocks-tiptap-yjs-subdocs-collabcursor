@@ -18,12 +18,12 @@ const Editor = memo(function Editor({
   fragment,
   placeholder,
   provider,
-  editorID,
+  docID,
 }: {
   fragment: Y.XmlFragment;
   placeholder: string;
   provider: any;
-  editorID: string;
+  docID: string;
 }) {
   const userInfo = useSelf((me) => me.info);
 
@@ -44,7 +44,7 @@ const Editor = memo(function Editor({
           name: userInfo?.name,
           color: getRandomColor(),
         },
-        field: editorID,
+        field: `cursor-${docID}`,
         // You can override the default render and selectionRender functions here if needed
       }),
     ],
