@@ -27,7 +27,7 @@
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
-    "y-prosemirror": "github:andrictham/y-prosemirror#master",
+    "y-prosemirror": "github:andrictham/y-prosemirror",
     "yjs": "^13.6.18"
   },
   "devDependencies": {
