@@ -41,10 +41,10 @@ const Editor = memo(function Editor({
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: userInfo?.name || "Anonymous",
+          name: userInfo?.name,
           color: getRandomColor(),
-          editorID: editorID,
         },
+        field: editorID,
         // You can override the default render and selectionRender functions here if needed
       }),
     ],

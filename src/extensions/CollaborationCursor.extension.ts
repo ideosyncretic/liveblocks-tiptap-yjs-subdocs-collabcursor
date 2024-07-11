@@ -7,20 +7,79 @@ type CollaborationCursorStorage = {
 };
 
 export interface CollaborationCursorOptions {
+  /**
+   * The Hocuspocus provider instance. This can also be a TiptapCloudProvider instance.
+   * @type {HocuspocusProvider | TiptapCloudProvider}
+   * @example new HocuspocusProvider()
+   */
   provider: any;
+
+  /**
+   * The user details object – feel free to add properties to this object as needed
+   * @example { name: 'John Doe', color: '#305500' }
+   */
   user: Record<string, any>;
-  render(user: Record<string, any>, currentEditorID: string): HTMLElement;
-  selectionRender(
-    user: Record<string, any>,
-    currentEditorID: string
-  ): DecorationAttrs;
-  onUpdate?: (users: { clientId: number; [key: string]: any }[]) => void;
+
+  /**
+   * A function that returns a DOM element for the cursor.
+   * @param user The user details object
+   * @example
+   * render: user => {
+   *  const cursor = document.createElement('span')
+   *  cursor.classList.add('collaboration-cursor__caret')
+   *  cursor.setAttribute('style', `border-color: ${user.color}`)
+   *
+   *  const label = document.createElement('div')
+   *  label.classList.add('collaboration-cursor__label')
+   *  label.setAttribute('style', `background-color: ${user.color}`)
+   *  label.insertBefore(document.createTextNode(user.name), null)
+   *
+   *  cursor.insertBefore(label, null)
+   *  return cursor
+   * }
+   */
+  render(user: Record<string, any>): HTMLElement;
+
+  /**
+   * A function that returns a ProseMirror DecorationAttrs object for the selection.
+   * @param user The user details object
+   * @example
+   * selectionRender: user => {
+   * return {
+   *  nodeName: 'span',
+   *  class: 'collaboration-cursor__selection',
+   *  style: `background-color: ${user.color}`,
+   *  'data-user': user.name,
+   * }
+   */
+  selectionRender(user: Record<string, any>): DecorationAttrs;
+
+  /**
+   * @deprecated The "onUpdate" option is deprecated. Please use `editor.storage.collaborationCursor.users` instead. Read more: https://tiptap.dev/api/extensions/collaboration-cursor
+   */
+  onUpdate: (users: { clientId: number; [key: string]: any }[]) => null;
+
+  /**
+   * A string that specifies thw name of the field in the Yjs awareness state, for which to store each connected client’s cursor state.
+   * @example
+   * "cursor-123"
+   */
+  field: string | undefined;
 }
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     collaborationCursor: {
+      /**
+       * Update details of the current user
+       * @example editor.commands.updateUser({ name: 'John Doe', color: '#305500' })
+       */
       updateUser: (attributes: Record<string, any>) => ReturnType;
+      /**
+       * Update details of the current user
+       *
+       * @deprecated The "user" command is deprecated. Please use "updateUser" instead. Read more: https://tiptap.dev/api/extensions/collaboration-cursor
+       */
       user: (attributes: Record<string, any>) => ReturnType;
     };
   }
@@ -37,6 +96,10 @@ const awarenessStatesToArray = (states: Map<number, Record<string, any>>) => {
 
 const defaultOnUpdate = () => null;
 
+/**
+ * This extension allows you to add collaboration cursors to your editor.
+ * @see https://tiptap.dev/api/extensions/collaboration-cursor
+ */
 export const CollaborationCursor = Extension.create<
   CollaborationCursorOptions,
   CollaborationCursorStorage
@@ -49,31 +112,15 @@ export const CollaborationCursor = Extension.create<
       user: {
         name: null,
         color: null,
-        editorID: null,
       },
-      render: (user, currentEditorID) => {
-        console.group("render");
-
-        // For some reason this works? Where does it come from?
-        console.log("currentEditorID: ", currentEditorID);
-
-        // This isn’t working. This always resolves to the last editor to render, probably because each fragment updates the user object anew
-        console.log("user.editorID: ", user.editorID);
-
-        // Currently, comparison is only true when the cursor is in the last-rendered editor. This is a reverse of the if check done below.
-        console.log("should render: ", user.editorID === currentEditorID);
-
-        console.groupEnd();
-
-        if (user.editorID !== currentEditorID) {
-          return document.createElement("span"); // Return empty span if not matching
-        }
-
+      render: (user) => {
         const cursor = document.createElement("span");
+
         cursor.classList.add("collaboration-cursor__caret");
         cursor.setAttribute("style", `border-color: ${user.color}`);
 
         const label = document.createElement("div");
+
         label.classList.add("collaboration-cursor__label");
         label.setAttribute("style", `background-color: ${user.color}`);
         label.insertBefore(document.createTextNode(user.name), null);
@@ -81,14 +128,9 @@ export const CollaborationCursor = Extension.create<
 
         return cursor;
       },
-      selectionRender: (user, currentEditorID) => {
-        if (user.editorID !== currentEditorID) {
-          return {}; // Return empty object if not matching
-        }
-
-        return defaultSelectionBuilder(user);
-      },
+      selectionRender: defaultSelectionBuilder,
       onUpdate: defaultOnUpdate,
+      field: undefined,
     };
   },
 
@@ -109,7 +151,7 @@ export const CollaborationCursor = Extension.create<
   addCommands() {
     return {
       updateUser: (attributes) => () => {
-        this.options.user = { ...this.options.user, ...attributes };
+        this.options.user = attributes;
 
         this.options.provider.awareness.setLocalStateField(
           "user",
@@ -151,12 +193,12 @@ export const CollaborationCursor = Extension.create<
 
           return this.options.provider.awareness;
         })(),
+        // @ts-ignore
         {
-          cursorBuilder: (user) =>
-            this.options.render(user, this.options.user.editorID),
-          selectionBuilder: (user) =>
-            this.options.selectionRender(user, this.options.user.editorID),
-        }
+          cursorBuilder: this.options.render,
+          selectionBuilder: this.options.selectionRender,
+        },
+        this.options.field
       ),
     ];
   },
